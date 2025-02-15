@@ -17,6 +17,7 @@ class Kernel extends HttpKernel
         \Illuminate\Http\Middleware\ValidatePostSize::class,
         \Illuminate\Http\Middleware\TrimStrings::class,
         \Illuminate\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
     ];
 
     protected $middlewareGroups = [
@@ -45,5 +46,6 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+        
     ];
 }

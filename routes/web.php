@@ -10,8 +10,7 @@ use App\Models\Category;
 // Inclusione delle rotte di autenticazione di Laravel Breeze
 require __DIR__.'/auth.php';
 
-// Rotta Home (accessibile a tutti)
-
+// 🔹 Rotta Home (accessibile a tutti)
 Route::get('/', function (Request $request) {
     $query = Product::query();
 
@@ -32,29 +31,29 @@ Route::get('/', function (Request $request) {
     }
 
     $products = $query->get();
-    $categories = Category::all(); // Passiamo anche le categorie alla vista
+    $categories = Category::all(); 
+    $totalProducts = Product::count(); // Conta il numero totale di prodotti
 
-    return view('home', compact('products', 'categories'));
+    return view('home', compact('products', 'categories', 'totalProducts'));
 })->name('home');
 
-// Rotta Dashboard Utente (solo per utenti autenticati e verificati)
+// 🔹 Dashboard reindirizzata alla home
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('home');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Rotte per la gestione del profilo (solo per utenti autenticati)
+// 🔹 Rotte per la gestione del profilo
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Rotte Admin (solo per utenti con ruolo "admin")
+// 🔹 Rotte Admin
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
-        return view('admin.dashboard');
+        return redirect()->route('admin.products.index');
     })->name('dashboard');
 
     Route::resource('products', ProductController::class);
 });
-

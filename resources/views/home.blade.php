@@ -12,6 +12,7 @@
         }
         .navbar {
             background-color: #343a40;
+      
         }
         .navbar a {
             color: white;
@@ -38,9 +39,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     @auth
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
-                        </li>
+                        @if(Auth::user()->role === 'admin')
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" href="{{ route('admin.products.index') }}">
+                                    Gestione Prodotti
+                                </a>
+                            </li>
+                        @endif
                         <li class="nav-item">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -61,56 +66,61 @@
     </nav>
 
     <!-- Hero Section -->
-    @section('content')
-<div class="container mt-5">
-    <div class="text-center">
-       <h1>Benvenuto nel nostro E-Commerce</h1>
-    </div>
-
-
-     <!-- Barra di Ricerca e Filtri -->
-     <form action="{{ route('home') }}" method="GET" class="ms-5 mb-4 mt-5">
-        <div class="row">
-            <div class="col-md-4">
-                <input type="text" name="search" class="form-control" placeholder="🔍 Cerca prodotto..." value="{{ request('search') }}">
-            </div>
-            <div class="col-md-3">
-                <select name="category" class="form-control">
-                    <option value="">📂 Tutte le Categorie</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">Filtra</button>
-            </div>
+    <div class="container mt-5">
+        <div class="text-center">
+            <h1>Benvenuto nel nostro E-Commerce</h1>
         </div>
-    </form>
-   
-    <div class="text-center">
-       <h5 class="mb-4 mt-5">🛍️ Prodotti Disponibili</h5>
-    </div>
-    <div class="row mt-5">
-        @forelse ($products as $product)
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm">
-                    <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" alt="{{ $product->name }}" style="height: 250px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $product->name }}</h5>
-                        <p class="card-text">{{ Str::limit($product->description, 80) }}</p>
-                        <h4 class="text-primary">€{{ number_format($product->price, 2) }}</h4>
-                        <a href="#" class="btn btn-success">🛒 Aggiungi al Carrello</a>
-                    </div>
+
+        
+
+        <!-- Barra di Ricerca e Filtri -->
+        <form action="{{ route('home') }}" method="GET" class="ms-5 mb-4 mt-5">
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" placeholder="🔍 Cerca prodotto..." value="{{ request('search') }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="category" class="form-control">
+                        <option value="">📂 Tutte le Categorie</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Filtra</button>
                 </div>
             </div>
-        @empty
-            <p class="text-center">Nessun prodotto disponibile.</p>
-        @endforelse
-    </div>
+        </form>
+
+        <div class="text-center">
+            <h5 class="mb-4 mt-5">🛍️ Prodotti Disponibili</h5>
+        </div>
+
+        <!-- Lista Prodotti -->
+        <div class="row mt-5">
+        <div class="row mt-5">
+    @foreach ($products as $product)
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+            <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://via.placeholder.com/300?text=No+Image' }}" 
+             class="card-img-top" alt="{{ $product->name }}" style="height: 250px; object-fit: cover;">
+ 
+                <div class="card-body">
+                    <h5 class="card-title">{{ $product->name }}</h5>
+                    <p class="card-text">{{ Str::limit($product->description, 80) }}</p>
+                    <h4 class="text-primary">€{{ number_format($product->price, 2) }}</h4>
+                    <a href="#" class="btn btn-success">🛒 Aggiungi al Carrello</a>
+                </div>
+            </div>
+        </div>
+    @endforeach
 </div>
+
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
