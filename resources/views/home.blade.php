@@ -75,7 +75,7 @@
 
         <!-- Barra di Ricerca e Filtri -->
         <form action="{{ route('home') }}" method="GET" class="ms-5 mb-4 mt-5">
-            <div class="row">
+            <div class="row search-filter-group">
                 <div class="col-md-4">
                     <input type="text" name="search" class="form-control" placeholder="🔍 Cerca prodotto..." value="{{ request('search') }}">
                 </div>
@@ -105,9 +105,7 @@
     @foreach ($products as $product)
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm">
-            <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://via.placeholder.com/300?text=No+Image' }}" 
-             class="card-img-top" alt="{{ $product->name }}" style="height: 250px; object-fit: cover;">
- 
+            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-fluid" style="height: 250px; object-fit: cover;">
                 <div class="card-body">
                     <h5 class="card-title">{{ $product->name }}</h5>
                     <p class="card-text">{{ Str::limit($product->description, 80) }}</p>

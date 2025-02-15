@@ -1,0 +1,91 @@
+/* --- Stili Generali --- */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* --- Navbar Responsive --- */
+.navbar-nav {
+    display: flex;
+    align-items: center;
+}
+
+/* Riduci dimensioni pulsanti su mobile */
+@media (max-width: 768px) {
+    .navbar-nav .nav-item {
+        margin-bottom: 10px;
+    }
+
+    .nav-link, .btn {
+        font-size: 14px;
+        padding: 6px 10px;
+    }
+}
+
+/* --- Sidebar Admin Responsive --- */
+.sidebar {
+    width: 250px;
+    background-color: #343a40;
+    color: white;
+    padding: 15px;
+    position: fixed;
+    height: 100vh;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Nascondiamo la sidebar su mobile */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+}
+
+/* --- Gestione Prodotti: Tabella Responsive --- */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Riduciamo dimensioni tabella su mobile */
+@media (max-width: 768px) {
+    .table th, .table td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .btn {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+}
+
+/* --- Griglia dei Prodotti Responsive --- */
+.card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Modifica le colonne su mobile */
+@media (max-width: 768px) {
+    .col-md-4 {
+        width: 50%; /* 2 colonne su mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    .col-md-4 {
+        width: 100%; /* 1 colonna su schermi molto piccoli */
+    }
+}
+/* --- Spaziatura tra ricerca e categoria su mobile --- */
+@media (max-width: 768px) {
+    .search-filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 150px; /* Spazio tra gli elementi */
+    }
+
+    .search-filter-group .form-control {
+        width: 100%; /* Occupa tutta la larghezza su mobile */
+    }
+}

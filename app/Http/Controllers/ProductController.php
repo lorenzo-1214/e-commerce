@@ -12,21 +12,21 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $query = Product::query();
-
-    // 🔍 Filtro per Nome Prodotto
-    if ($request->has('search') && !empty($request->search)) {
-        $query->where('name', 'like', '%' . $request->search . '%');
-    }
-
-    // 📂 Filtro per Categoria
-    if ($request->has('category') && !empty($request->category)) {
-        $query->where('category_id', $request->category);
-    }
-
-    $products = $query->get(); // Otteniamo solo i prodotti filtrati
-    $categories = Category::all(); // Recuperiamo tutte le categorie
-
-    return view('admin.products.index', compact('products', 'categories'));
+        
+        // 🔍 Filtro per Nome Prodotto
+        if ($request->has('search') && !empty($request->search)) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+        
+        // 📂 Filtro per Categoria
+        if ($request->has('category') && !empty($request->category)) {
+            $query->where('category_id', $request->category);
+        }
+        
+        $products = $query->get(); // Otteniamo solo i prodotti filtrati
+        $categories = Category::all(); // Recuperiamo tutte le categorie
+        
+        return view('admin.products.index', compact('products', 'categories'));
     }
     
     public function create()
@@ -34,7 +34,7 @@ class ProductController extends Controller
         $categories = Category::all();
         return view('admin.products.create', compact('categories'));
     }
-
+    
     public function store(Request $request)
     {
         $request->validate([
@@ -45,23 +45,23 @@ class ProductController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-
+        
         $product = new Product();
         $product->name = $request->name;
         $product->description = $request->description;
         $product->price = $request->price;
         $product->stock = $request->stock;
         $product->category_id = $request->category_id;
-
+        
         if ($request->hasFile('image')) {
             $product->image = $request->file('image')->store('products', 'public');
         }
-
+        
         $product->save();
         
         return redirect()->route('admin.products.index')->with('success', 'Prodotto aggiunto con successo!');
     }
-
+    
     public function edit(Product $product)
     {
         $categories = Category::all();
@@ -78,7 +78,7 @@ class ProductController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-
+        
         $product->update([
             'name' => $request->name,
             'description' => $request->description,
@@ -86,7 +86,7 @@ class ProductController extends Controller
             'stock' => $request->stock,
             'category_id' => $request->category_id,
         ]);
-
+        
         if ($request->hasFile('image')) {
             if ($product->image && Storage::disk('public')->exists($product->image)) {
                 Storage::disk('public')->delete($product->image);
@@ -97,14 +97,38 @@ class ProductController extends Controller
         
         return redirect()->route('admin.products.index')->with('success', 'Prodotto aggiornato con successo!');
     }
-
+    
     public function destroy(Product $product)
     {
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
         }
-
+        
         $product->delete();
         return redirect()->route('admin.products.index')->with('success', 'Prodotto eliminato!');
     }
+    public function bulkDelete(Request $request)
+    {
+        // Verifica che almeno un prodotto sia stato selezionato
+        $request->validate([
+            'selected_products' => 'required|string',
+        ]);
+    
+        // Decodifica gli ID inviati dal JSON
+        $selectedProducts = json_decode($request->selected_products, true);
+    
+        // Trova ed elimina i prodotti
+        $products = Product::whereIn('id', $selectedProducts)->get();
+    
+        foreach ($products as $product) {
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+            $product->delete();
+        }
+    
+        return redirect()->route('admin.products.index')->with('success', 'Prodotti selezionati eliminati con successo!');
+    }
+    
+    
 }
